@@ -16,7 +16,9 @@ AStarAlgorithm::AStarAlgorithm(std::unique_ptr<NPuzzle> currentState, std::uniqu
 	startState.setG(0);
 	startState.setF(startState.getHeuristicValue() + startState.getG());
 	this->_opened.insert(startState);
-	std::cout << "A* Algorithm initialized" << std::endl << std::endl;
+	std::cout << "A* Algorithm initialized with the following heuristic:" << std::endl;
+	_heuristic->printType();
+	std::cout << std::endl;
 }
 
 AStarAlgorithm::~AStarAlgorithm()
@@ -55,7 +57,7 @@ std::multiset<NPuzzle> AStarAlgorithm::expand(NPuzzle const &puzzle)
 				continue;
 			}
 			newPuzzle->setHeuristicValue(this->_heuristic->calculateHeuristic(*newPuzzle, this->_goalState));
-			newPuzzle->setG(puzzle.getG() + 1);
+			newPuzzle->setG(puzzle.getG() + NPuzzle::cost);
 			newPuzzle->setF(newPuzzle->getG() + newPuzzle->getHeuristicValue());
 			for (auto it = this->_opened.begin(); it != this->_opened.end(); it++) {
 				if (*it == *newPuzzle) {
@@ -71,15 +73,15 @@ std::multiset<NPuzzle> AStarAlgorithm::expand(NPuzzle const &puzzle)
 	return expanded;
 }
 
-void AStarAlgorithm::printSolution() const
+void AStarAlgorithm::printSolution(double elapsedTime) const
 {
 	if (this->_success)
 	{
-		std::cout << "Solution found!" << std::endl;
+		std::endl(std::cout);
+		std::cout << "Solution found in " << elapsedTime << " seconds" << std::endl;
 		std::cout << "Time complexity: " << this->_opened.size() << std::endl;
 		std::cout << "Space complexity: " << this->_closed.size() << std::endl;
-		std::cout << "Number of moves: " << this->_solution.size() << std::endl;
-		std::cout << "Solution: " << std::endl;
+		std::cout << "Number of moves: " << this->_solution.size() << std::endl << std::endl;
 		// ask user if he wants to print the solution
 		std::cout << "Do you want to print the solution? (y/n)" << std::endl;
 		char answer;

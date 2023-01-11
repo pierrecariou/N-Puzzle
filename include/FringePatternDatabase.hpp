@@ -4,8 +4,9 @@
 
 class FringePatternDatabase : public Heuristic {
  public:
-  FringePatternDatabase() = default;
-  ~FringePatternDatabase() = default;
+	FringePatternDatabase() = default;
+	~FringePatternDatabase() = default;
 
-  int calculateHeuristic(NPuzzle const &currentState, std::unique_ptr<NPuzzle> const &goalState) const override;
+	int calculateHeuristic(NPuzzle const &currentState, std::unique_ptr<NPuzzle> const &goalState) const override;
+	void printType() const override;
 };

@@ -25,3 +25,8 @@ std::unique_ptr<NPuzzle> NPuzzleFactory::createNPuzzleGoalState(int puzzleSize) 
 {
 	return std::make_unique<NPuzzle>(puzzleSize);
 }
+
+std::unique_ptr<NPuzzle> NPuzzleFactory::createNPuzzleRandomState() const
+{
+	return std::make_unique<NPuzzle>();
+}

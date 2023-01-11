@@ -22,7 +22,7 @@ class AStarAlgorithm {
 	~AStarAlgorithm();
 	
 	void solve();
-	void printSolution() const;
+	void printSolution(double elapsedTime) const;
 	
  private:
 	void reconstructPath();

@@ -6,8 +6,9 @@
 
 class Heuristic {
  public:
-  Heuristic() = default;
-  virtual ~Heuristic() = default;
+	Heuristic() = default;
+	virtual ~Heuristic() = default;
 
-  virtual int calculateHeuristic(NPuzzle const &currentState, std::unique_ptr<NPuzzle> const &goalState) const = 0;
+	virtual int calculateHeuristic(NPuzzle const &currentState, std::unique_ptr<NPuzzle> const &goalState) const = 0;
+	virtual void printType() const = 0;
 };

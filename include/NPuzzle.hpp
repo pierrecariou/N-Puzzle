@@ -11,6 +11,9 @@
 
 class NPuzzle {
  public:
+	static constexpr int cost = 1;
+
+	NPuzzle();
 	NPuzzle(std::string inputFile);
 	NPuzzle(int puzzleSize);
 	NPuzzle(NPuzzle const &currentState, Direction direction);	

@@ -49,3 +49,8 @@ int LinearConflict::calculateHeuristic(NPuzzle const &currentState, std::unique_
 
 	return (manhattan + 2 * linear);
 }
+
+void LinearConflict::printType() const
+{
+	std::cout << "Linear Conflict" << std::endl;
+}

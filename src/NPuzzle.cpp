@@ -8,6 +8,41 @@
 #include <iomanip>
 #include <utility>
 #include <vector>
+#include <random>
+
+NPuzzle::NPuzzle() : _size(0), _puzzle(), _tilePositions(), _heuristicValue(0), _f(0), _g(0), _parent(nullptr)
+{
+	std::random_device randomDevice;
+
+	std::mt19937 generator(randomDevice());
+
+	std::uniform_int_distribution<int> distribution(3, 17);
+
+	_size = distribution(generator);
+
+	int nums[_size * _size];
+
+	for (int i = 0; i < _size * _size; i++) {
+		nums[i] = i;
+	}
+
+	for (int i = 0; i < _size * _size; i++) {
+		int j = rand() % (_size * _size);
+		int temp = nums[i];
+		nums[i] = nums[j];
+		nums[j] = temp;
+	}
+
+	for (int i = 0; i < _size; i++) {
+		std::vector<int> row;
+		for (int j = 0; j < _size; j++) {
+			row.push_back(nums[i * _size + j]);
+		}
+		_puzzle.push_back(row);
+	}
+
+	initializeTilePositions();
+}
 
 NPuzzle::NPuzzle(std::string inputFile) : _parent(nullptr)
 {
@@ -295,7 +330,7 @@ void NPuzzle::printPuzzle() const
 	for (int i = 0; i < this->_size; i++)
 	{
 		for (int j = 0; j < this->_size; j++)
-				std::cout << std::setw(2) << this->_puzzle[i][j] << " ";
+				std::cout << std::setw(4) << this->_puzzle[i][j] << " ";
 		std::cout << std::endl;
 	}
 }
