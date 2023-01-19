@@ -10,7 +10,7 @@
 #include <vector>
 #include <random>
 
-NPuzzle::NPuzzle() : _size(0), _puzzle(), _tilePositions(), _heuristicValue(0), _f(0), _g(0), _parent(nullptr)
+NPuzzle::NPuzzle() : _size(0), _puzzle(), _tilePositions(), _heuristicValue(0), _f(0), _g(0), _parentIndex(-1)
 {
 	std::random_device randomDevice;
 
@@ -44,7 +44,7 @@ NPuzzle::NPuzzle() : _size(0), _puzzle(), _tilePositions(), _heuristicValue(0), 
 	initializeTilePositions();
 }
 
-NPuzzle::NPuzzle(std::string inputFile) : _parent(nullptr)
+NPuzzle::NPuzzle(std::string inputFile) : _parentIndex(-1)
 {
 	std::ifstream file(inputFile);
 	std::string line;
@@ -54,7 +54,7 @@ NPuzzle::NPuzzle(std::string inputFile) : _parent(nullptr)
 		std::getline(file, line);
 		if (line.size() != 1 || !isdigit(line[0]))
 		{
-			std::cout << "Error: Invalid size in inputFile" << std::endl;
+			std::cout << "Error: Invalid size in inputFile" << '\n';
 			file.close();
 			exit(1);
 		}
@@ -70,7 +70,7 @@ NPuzzle::NPuzzle(std::string inputFile) : _parent(nullptr)
 				{
 					if (!isdigit(number[i]))
 					{
-						std::cout << "Error: Invalid puzzle in inputFile" << std::endl;
+						std::cout << "Error: Invalid puzzle in inputFile" << '\n';
 						file.close();
 						exit(1);
 					}
@@ -78,8 +78,8 @@ NPuzzle::NPuzzle(std::string inputFile) : _parent(nullptr)
 				row.push_back(stoi(number));
 			}
 			if (row.size() != this->_size) {
-				std::cout << row.size() << std::endl;
-				std::cout << "Error: Invalid puzzle in inputFile" << std::endl;
+				std::cout << row.size() << '\n';
+				std::cout << "Error: Invalid puzzle in inputFile" << '\n';
 				file.close();
 				exit(1);
 			}
@@ -88,19 +88,19 @@ NPuzzle::NPuzzle(std::string inputFile) : _parent(nullptr)
 		file.close();
 	}
 	else {
-		std::cout << "Unable to open file" << std::endl;
+		std::cout << "Unable to open file" << '\n';
 		exit(1);
 	}
 	if (this->_puzzle.size() != this->_size)
 	{
-		std::cout << "Error: Invalid puzzle in inputFile" << std::endl;
+		std::cout << "Error: Invalid puzzle in inputFile" << '\n';
 		exit(1);
 	}
 
 	this->initializeTilePositions();
 }
 
-NPuzzle::NPuzzle(int puzzleSize) : _parent(nullptr)
+NPuzzle::NPuzzle(int puzzleSize) : _parentIndex(-1)
 {
 	this->_size = puzzleSize;
 	for (int i = 0; i < this->_size; i++)
@@ -116,7 +116,7 @@ NPuzzle::NPuzzle(int puzzleSize) : _parent(nullptr)
 	this->initializeTilePositions();
 }
 
-NPuzzle::NPuzzle(NPuzzle const &currentState, Direction direction) : _parent(std::make_unique<NPuzzle>(currentState))
+NPuzzle::NPuzzle(NPuzzle const &currentState, int parentIndex, Direction direction) : _parentIndex(parentIndex)
 {
 	this->_size = currentState._size;
 	this->_puzzle = currentState._puzzle;
@@ -171,8 +171,8 @@ NPuzzle &NPuzzle::operator=(NPuzzle const &rhs)
 		this->_heuristicValue = rhs._heuristicValue;
 		this->_g = rhs._g;
 		this->_f = rhs._f;
-		if (rhs._parent)
-			this->_parent = std::make_unique<NPuzzle>(*rhs._parent);
+		if (rhs._parentIndex)
+			this->_parentIndex = rhs._parentIndex;
 	}
 	return (*this);
 }
@@ -217,7 +217,7 @@ bool NPuzzle::canMove(const Direction &direction) const
 
 bool NPuzzle::operator<(const NPuzzle &rhs) const
 {
-	//std::cout << "operator<" << std::endl;
+	//std::cout << "operator<" << '\n';
 	return (this->_f < rhs._f);
 }
 
@@ -286,14 +286,14 @@ void NPuzzle::setG(int g)
 	this->_g = g;
 }
 
-NPuzzle* NPuzzle::getParent() const
+int NPuzzle::getParentIndex() const
 {
-	return this->_parent.get();
+	return this->_parentIndex;
 }
 
-void NPuzzle::setParent(std::unique_ptr<NPuzzle> parent)
+void NPuzzle::setParentIndex(int parentIndex)
 {
-	this->_parent = std::move(parent);
+	this->_parentIndex = parentIndex;
 }
 
 bool NPuzzle::isSolvable() const
@@ -331,6 +331,6 @@ void NPuzzle::printPuzzle() const
 	{
 		for (int j = 0; j < this->_size; j++)
 				std::cout << std::setw(4) << this->_puzzle[i][j] << " ";
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 }

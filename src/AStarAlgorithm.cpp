@@ -16,9 +16,9 @@ AStarAlgorithm::AStarAlgorithm(std::unique_ptr<NPuzzle> currentState, std::uniqu
 	startState.setG(0);
 	startState.setF(startState.getHeuristicValue() + startState.getG());
 	this->_opened.insert(startState);
-	std::cout << "A* Algorithm initialized with the following heuristic:" << std::endl;
+	std::cout << "A* Algorithm initialized with the following heuristic:" << '\n';
 	_heuristic->printType();
-	std::cout << std::endl;
+	std::cout << '\n';
 }
 
 AStarAlgorithm::~AStarAlgorithm()
@@ -27,7 +27,7 @@ AStarAlgorithm::~AStarAlgorithm()
 
 void AStarAlgorithm::solve()
 {
-	std::cout << "Solving..." << std::endl;
+	std::cout << "Solving..." << '\n';
 	while (!this->_opened.empty() && !this->_success)
 	{
 		this->_closed.push_back(*this->_opened.begin());
@@ -52,7 +52,8 @@ std::multiset<NPuzzle> AStarAlgorithm::expand(NPuzzle const &puzzle)
 	for (int direction = UP; direction < END; direction++)
 	{
 		if (puzzle.canMove(static_cast<Direction>(direction))) {
-			std::unique_ptr<NPuzzle> newPuzzle = this->_factory.createNPuzzle(puzzle, static_cast<Direction>(direction));
+			std::unique_ptr<NPuzzle> newPuzzle = this->_factory.createNPuzzle(puzzle, this->_closed.size() - 1, static_cast<Direction>(direction));
+
 			if (std::find(this->_closed.begin(), this->_closed.end(), *newPuzzle) != this->_closed.end()) {
 				continue;
 			}
@@ -78,34 +79,35 @@ void AStarAlgorithm::printSolution(double elapsedTime) const
 	if (this->_success)
 	{
 		std::endl(std::cout);
-		std::cout << "Solution found in " << elapsedTime << " seconds" << std::endl;
-		std::cout << "Time complexity: " << this->_opened.size() << std::endl;
-		std::cout << "Space complexity: " << this->_closed.size() << std::endl;
-		std::cout << "Number of moves: " << this->_solution.size() << std::endl << std::endl;
+		std::cout << "Solution found in " << elapsedTime << " seconds" << '\n';
+		std::cout << "Time complexity: " << this->_opened.size() << '\n';
+		std::cout << "Space complexity: " << this->_closed.size() << '\n';
+		std::cout << "Number of moves: " << this->_solution.size() << '\n' << '\n';
 		// ask user if he wants to print the solution
-		std::cout << "Do you want to print the solution? (y/n)" << std::endl;
+		std::cout << "Do you want to print the solution? (y/n)" << '\n';
 		char answer;
 		std::cin >> answer;
 		if (answer == 'y')
 		{
 			for (auto it = this->_solution.end() - 1; it != this->_solution.begin() - 1; --it)
 			{
-				(*it).printPuzzle();
-				std::cout << std::endl;
+				(*it)->printPuzzle();
+				std::cout << '\n';
 			}
 		}
 	} else {
-		std::cout << "No solution found!" << std::endl;
+		std::cout << "No solution found!" << '\n';
 	}
 }
 
 void AStarAlgorithm::reconstructPath()
 {
-	std::cout << "Reconstructing path..." << std::endl;
-	NPuzzle *parent = &(*this->_closed.rbegin());
-	while (parent != nullptr)
+	std::cout << "Reconstructing path..." << '\n';
+	NPuzzle *parent = &this->_closed.back();
+
+	while (parent->getParentIndex() != -1)
 	{
-		this->_solution.push_back(*parent);
-		parent = parent->getParent();
+		this->_solution.push_back(parent);
+		parent = &this->_closed[parent->getParentIndex()];
 	}
 }

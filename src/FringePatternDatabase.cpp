@@ -12,5 +12,5 @@ int FringePatternDatabase::calculateHeuristic(NPuzzle const &currentState, std::
 
 void FringePatternDatabase::printType() const
 {
-	std::cout << "Fringe Pattern Database" << std::endl;
+	std::cout << "Fringe Pattern Database" << '\n';
 }

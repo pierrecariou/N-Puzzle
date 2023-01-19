@@ -11,9 +11,9 @@ NPuzzleFactory::~NPuzzleFactory()
 {
 }
 
-std::unique_ptr<NPuzzle> NPuzzleFactory::createNPuzzle(NPuzzle const &currentPuzzle, Direction const &direction) const
+std::unique_ptr<NPuzzle> NPuzzleFactory::createNPuzzle(NPuzzle const &currentPuzzle, int parentIndex, Direction const &direction) const
 {
-	return std::make_unique<NPuzzle>(currentPuzzle, direction);
+	return std::make_unique<NPuzzle>(currentPuzzle, parentIndex, direction);
 }
 
 std::unique_ptr<NPuzzle> NPuzzleFactory::createNPuzzleInitialState(std::string const &fileName) const

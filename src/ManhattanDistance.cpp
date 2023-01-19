@@ -15,5 +15,5 @@ int ManhattanDistance::calculateHeuristic(NPuzzle const &currentState, const std
 }
 
 void ManhattanDistance::printType() const {
-	std::cout << "Manhattan Distance" << std::endl;
+	std::cout << "Manhattan Distance" << '\n';
 }

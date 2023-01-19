@@ -16,7 +16,7 @@ class NPuzzle {
 	NPuzzle();
 	NPuzzle(std::string inputFile);
 	NPuzzle(int puzzleSize);
-	NPuzzle(NPuzzle const &currentState, Direction direction);	
+	NPuzzle(NPuzzle const &currentState, int parentIndex, Direction direction);
 
 	NPuzzle(NPuzzle const &src);
 	NPuzzle &operator=(NPuzzle const &rhs);
@@ -49,8 +49,8 @@ class NPuzzle {
 	int getG() const;
 	void setG(int g);
 
-	NPuzzle* getParent() const;
-	void setParent(std::unique_ptr<NPuzzle> parent);
+	int getParentIndex() const;
+	void setParentIndex(int parentIndex);
 
 	bool isSolvable() const;
 
@@ -66,5 +66,5 @@ class NPuzzle {
 	int _heuristicValue;
 	int _g;
 	int _f;
-	std::unique_ptr<NPuzzle> _parent;
+	int _parentIndex;
 };

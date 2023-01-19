@@ -24,29 +24,29 @@ int	main(int argc, char **argv)
 	}
 	
 
-	std::cout << "Starting State " << std::endl;
-	std::cout << "---------------" << std::endl;
+	std::cout << "Starting State " << '\n';
+	std::cout << "---------------" << '\n';
 	initialState->printPuzzle();
-	std::cout << std::endl;
+	std::cout << '\n';
 	
 	if (!initialState->isSolvable())
 	{
-		std::cout << "This puzzle is not solvable" << std::endl;
+		std::cout << "This puzzle is not solvable" << '\n';
 		return (1);
 	}
 
 	std::unique_ptr<NPuzzle> goalState = factory.createNPuzzleGoalState(initialState->getSize());
 
-	std::cout << "Goal State" << std::endl;
-	std::cout << "----------" << std::endl;
+	std::cout << "Goal State" << '\n';
+	std::cout << "----------" << '\n';
 	goalState->printPuzzle();
-	std::cout << std::endl;
+	std::cout << '\n';
 
 	// Ask the user for the heuristic to use
-	std::cout << "Choose which heuristic to use:" << std::endl;
-	std::cout << "1. Manhattan Distance" << std::endl;
-	std::cout << "2. Linear Conflict" << std::endl;
-	//std::cout << "3. Manhattan Distance + Linear Conflict" << std::endl;
+	std::cout << "Choose which heuristic to use:" << '\n';
+	std::cout << "1. Manhattan Distance" << '\n';
+	std::cout << "2. Linear Conflict" << '\n';
+	//std::cout << "3. Manhattan Distance + Linear Conflict" << '\n';
 
 	int heuristicChoice = 0;
 	std::cin >> heuristicChoice;
@@ -66,11 +66,11 @@ int	main(int argc, char **argv)
 	//		heuristic->addHeuristic(std::make_unique<LinearConflict>());
 	//		break;
 		default:
-			std::cout << "Invalid choice" << std::endl;
+			std::cout << "Invalid choice" << '\n';
 			return (1);
 	}
 
-	std::cout << std::endl;
+	std::cout << '\n';
 	AStarAlgorithm algorithm = AStarAlgorithm(std::move(initialState), std::move(goalState), std::move(heuristic) , factory);
 
 	// print time taken to solve the algorithm
@@ -81,7 +81,7 @@ int	main(int argc, char **argv)
 	auto finish = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double> elapsed = finish - start;
-	//std::cout << std::endl << std::endl << "Elapsed time: " << elapsed.count() << " s	" << std::endl;
+	//std::cout << '\n' << '\n' << "Elapsed time: " << elapsed.count() << " s	" << '\n';
 
 	algorithm.printSolution(double(elapsed.count()));
 

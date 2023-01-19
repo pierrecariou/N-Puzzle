@@ -6,16 +6,6 @@
 #include <set>
 #include <vector>
 
-/*
-struct SharedNPuzzleComparator {
-    bool operator()(const std::shared_ptr<NPuzzle>& lhs,
-                    const std::shared_ptr<NPuzzle>& rhs) const
-    {
-        return lhs->getF() < rhs->getF();
-    }
-};
-	*/
-
 class AStarAlgorithm {
  public:
 	AStarAlgorithm(std::unique_ptr<NPuzzle> currentState, std::unique_ptr<NPuzzle> const goalState, std::unique_ptr<Heuristic> const heuristic, NPuzzleFactory const &factory);
@@ -40,5 +30,5 @@ class AStarAlgorithm {
 	std::vector<NPuzzle> _closed;
 
 	bool _success;
-	std::vector<NPuzzle> _solution;
+	std::vector<NPuzzle *> _solution;
 };
