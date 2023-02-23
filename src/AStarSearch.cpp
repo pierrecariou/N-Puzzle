@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "AStarSearch.hpp"
 
@@ -40,19 +41,26 @@ std::vector<Puzzle> AStarSearch::solve(Puzzle goal)
 		open.pop();
 	open.push(Node(this, 0, puzzle));
 
+	std::vector<Puzzle> path;
 	while (!open.empty())
 	{
 		Node node = open.top();
 		open.pop();
 
 		if (node.getPuzzle() == goal)
-			return reconstructPath(node);
+		{
+			path = reconstructPath(node);
+			break;
+		}
 
 		closed.push_back(node);
 		expand(node);
 	}
 
-	return std::vector<Puzzle>();
+	std::cout << "Closed: " << closed.size() << std::endl;
+	std::cout << "Open: " << open.size() << std::endl;
+
+	return path;
 }
 
 AStarSearch::Node::Node(AStarSearch *search, size_t parent, Puzzle puzzle) : search(search), parent(parent), puzzle(puzzle)
