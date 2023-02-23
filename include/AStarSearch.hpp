@@ -1,4 +1,5 @@
-#include <queue>
+#include <set>
+#include <memory>
 
 #include "Puzzle.hpp"
 #include "Heuristic.hpp"
@@ -12,14 +13,14 @@ private:
 	class Node;
 	struct NodeCompare
 	{
-		bool operator()(Node const &a, Node const &b);
+		bool operator()(std::shared_ptr<Node> const &a, std::shared_ptr<Node> const &b) const;
 	};
 
-	std::priority_queue<Node, std::vector<Node>, NodeCompare> open;
-	std::vector<Node> closed;
+	std::multiset<std::shared_ptr<Node>, NodeCompare> open;
+	std::vector<std::shared_ptr<Node>> closed;
 
-	void expand(Node &node);
 	std::vector<Puzzle> reconstructPath(Node node);
+	void expand(std::shared_ptr<Node> node);
 
 public:
 	AStarSearch(Heuristic *heuristic);
@@ -31,18 +32,17 @@ public:
 class AStarSearch::Node
 {
 private:
-	AStarSearch *search;
-	size_t parent;
 	Puzzle puzzle;
+	Node *parent;
 
 	unsigned int cost;
 	unsigned int heuristic;
 
 public:
-	Node(AStarSearch *search, size_t parent, Puzzle puzzle);
+	Node(Puzzle puzzle, Node *parent, Heuristic *heuristic);
 
 	Puzzle getPuzzle() const;
-	const Node *getParent() const;
+	Node *getParent() const;
 
 	unsigned int getCost() const;
 	unsigned int getHeuristic() const;

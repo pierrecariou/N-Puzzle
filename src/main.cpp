@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
 
 	AStarSearch search(new ManhattanDistance());
 	search.setPuzzle(*puzzle);
+	delete puzzle;
 
 	std::cout << "Solving..." << std::endl;
 	auto start = std::chrono::steady_clock::now();
