@@ -73,12 +73,6 @@ int main(int argc, char *argv[])
 	std::cout << toString(*puzzle) << std::endl
 			  << std::endl;
 
-	Puzzle goal({1, 2, 3, 4, 5, 6, 7, 8, 0});
-
-	std::cout << "Goal puzzle:" << std::endl;
-	std::cout << toString(goal) << std::endl
-			  << std::endl;
-
 	// AStarSearch search(new ManhattanDistance());
 	// search.setPuzzle(*puzzle);
 	// delete puzzle;

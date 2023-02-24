@@ -5,5 +5,5 @@
 class Heuristic
 {
 public:
-	virtual int calculate(Puzzle puzzle) = 0;
+	virtual unsigned int calculate(Puzzle puzzle) = 0;
 };
