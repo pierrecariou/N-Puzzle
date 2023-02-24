@@ -1,9 +1,7 @@
-#include <vector>
-#include <map>
-#include <random>
-#include <cmath>
-
 #include "Puzzle.hpp"
+
+#include <vector>
+#include <random>
 
 bool Puzzle::canMove(Direction direction)
 {
@@ -24,6 +22,7 @@ bool Puzzle::canMove(Direction direction)
 Puzzle Puzzle::move(Direction direction)
 {
 	Puzzle result = *this;
+
 	switch (direction)
 	{
 	case UP:
@@ -39,11 +38,12 @@ Puzzle Puzzle::move(Direction direction)
 		result.emptyTile.second++;
 		break;
 	}
-	std::swap(result.tiles[emptyTile.first][emptyTile.second], result.tiles[result.emptyTile.first][result.emptyTile.second]);
+
+	std::swap(result.tiles[emptyTile.first + emptyTile.second * size], result.tiles[result.emptyTile.first + result.emptyTile.second * size]);
 	return result;
 }
 
-Puzzle::Puzzle(unsigned char size) : size(size)
+Puzzle::Puzzle(unsigned char size)
 {
 	std::vector<unsigned char> tiles(size * size);
 	std::iota(tiles.begin(), tiles.end(), 1);
@@ -54,7 +54,7 @@ Puzzle::Puzzle(unsigned char size) : size(size)
 	std::random_device rd;
 	std::mt19937 gen(rd());
 
-	for (unsigned int _ = 0; _ < pow(size, 4); _++)
+	for (unsigned int _ = 0; _ < std::pow(size, 4); _++)
 	{
 		std::vector<Puzzle> moves = getMoves();
 		std::uniform_int_distribution<> dis(0, moves.size() - 1);
@@ -62,37 +62,15 @@ Puzzle::Puzzle(unsigned char size) : size(size)
 	}
 }
 
-Puzzle::Puzzle(std::vector<unsigned char> const &tiles) : size(std::sqrt(tiles.size()))
+Puzzle::Puzzle(std::vector<unsigned char> tiles) : size(std::sqrt(tiles.size())), tiles(tiles)
 {
-	this->tiles.resize(size);
-	for (unsigned char i = 0; i < size; i++)
-		this->tiles[i].assign(tiles.begin() + i * size, tiles.begin() + (i + 1) * size);
-
-	for (unsigned char y = 0; y < size; y++)
-		for (unsigned char x = 0; x < size; x++)
-			if (this->tiles[y][x] == 0)
-				emptyTile = std::make_pair(y, x);
-}
-
-std::string Puzzle::toString() const
-{
-	std::string result;
-	for (unsigned char y = 0; y < size; y++)
-	{
-		if (y != 0)
-			result += "\n";
-		for (unsigned char x = 0; x < size; x++)
-		{
-			if (x != 0)
-				result += "\t";
-			result += std::to_string(tiles[y][x]);
-		}
-	}
-	return result;
+	for (unsigned short i = 0; i < tiles.size(); i++)
+		if (tiles[i] == 0)
+			emptyTile = std::make_pair(i % size, i / size);
 }
 
 unsigned char Puzzle::getSize() const { return size; }
-std::vector<std::vector<unsigned char>> Puzzle::getTiles() const { return tiles; }
+std::vector<unsigned char> Puzzle::getTiles() const { return tiles; }
 std::vector<Puzzle> Puzzle::getMoves()
 {
 	std::vector<Puzzle> result;

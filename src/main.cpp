@@ -1,10 +1,10 @@
-#include <iostream>
-#include <chrono>
+#include "Puzzle.hpp"
+
 #include <fstream>
 #include <sstream>
-
-#include "AStarSearch.hpp"
-#include "ManhattanDistance.hpp"
+#include <iostream>
+#include <chrono>
+#include <cmath>
 
 int error(std::string message, int code = 1)
 {
@@ -41,6 +41,23 @@ std::vector<unsigned char> fromFile(std::string filename)
 	return puzzle;
 }
 
+std::string toString(Puzzle puzzle)
+{
+	unsigned char size = puzzle.getSize();
+	std::vector<unsigned char> tiles = puzzle.getTiles();
+
+	std::string result;
+	for (unsigned short i = 0; i < tiles.size(); i++)
+	{
+		result += std::to_string(tiles[i]);
+		if (i % size != size - 1)
+			result += ' ';
+		else if (i != tiles.size() - 1)
+			result += '\n';
+	}
+	return result;
+}
+
 int main(int argc, char *argv[])
 {
 	Puzzle *puzzle;
@@ -53,30 +70,30 @@ int main(int argc, char *argv[])
 		puzzle = new Puzzle();
 
 	std::cout << "Initial puzzle:" << std::endl;
-	std::cout << puzzle->toString() << std::endl
+	std::cout << toString(*puzzle) << std::endl
 			  << std::endl;
 
 	Puzzle goal({1, 2, 3, 4, 5, 6, 7, 8, 0});
 
 	std::cout << "Goal puzzle:" << std::endl;
-	std::cout << goal.toString() << std::endl
+	std::cout << toString(goal) << std::endl
 			  << std::endl;
 
-	AStarSearch search(new ManhattanDistance());
-	search.setPuzzle(*puzzle);
-	delete puzzle;
+	// AStarSearch search(new ManhattanDistance());
+	// search.setPuzzle(*puzzle);
+	// delete puzzle;
 
-	std::cout << "Solving..." << std::endl;
-	auto start = std::chrono::steady_clock::now();
-	std::vector<Puzzle> path = search.solve(goal);
-	auto end = std::chrono::steady_clock::now();
+	// std::cout << "Solving..." << std::endl;
+	// auto start = std::chrono::steady_clock::now();
+	// std::vector<Puzzle> path = search.solve(goal);
+	// auto end = std::chrono::steady_clock::now();
 
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
-			  << std::endl;
+	// std::chrono::duration<double> elapsed_seconds = end - start;
+	// std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
+	// 		  << std::endl;
 
-	std::cout << "Solution:" << std::endl;
-	for (Puzzle puzzle : path)
-		std::cout << puzzle.toString() << std::endl
-				  << std::endl;
+	// std::cout << "Solution:" << std::endl;
+	// for (Puzzle puzzle : path)
+	// 	std::cout << puzzle.toString() << std::endl
+	// 			  << std::endl;
 }
