@@ -25,7 +25,7 @@ void AStarSearch::expand(std::shared_ptr<Node> node)
 {
 	for (Puzzle puzzle : node.get()->getPuzzle().getMoves())
 	{
-		Node child(heuristic, puzzle, node);
+		Node child(*heuristic.get(), puzzle, node);
 
 		if (std::find_if(closed.begin(), closed.end(), [&child](std::shared_ptr<Node> const &node)
 						 { return node.get()->getPuzzle() == child.getPuzzle(); }) != closed.end())
@@ -46,7 +46,7 @@ void AStarSearch::expand(std::shared_ptr<Node> node)
 	}
 }
 
-AStarSearch::AStarSearch(Heuristic &heuristic) : heuristic(heuristic) {}
+AStarSearch::AStarSearch(std::unique_ptr<Heuristic> heuristic) : heuristic(std::move(heuristic)) {}
 void AStarSearch::init(Puzzle puzzle)
 {
 	this->puzzle = puzzle;
@@ -54,7 +54,7 @@ void AStarSearch::init(Puzzle puzzle)
 	frontier.clear();
 	closed.clear();
 
-	frontier.insert(std::make_unique<Node>(heuristic, puzzle, nullptr));
+	frontier.insert(std::make_unique<Node>(*heuristic.get(), puzzle, nullptr));
 }
 
 std::vector<Puzzle> AStarSearch::solve()

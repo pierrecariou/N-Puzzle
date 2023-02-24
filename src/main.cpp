@@ -72,9 +72,7 @@ int main(int argc, char *argv[])
 	std::cout << toString(puzzle) << std::endl
 			  << std::endl;
 
-	ManhattanDistance heuristic;
-
-	AStarSearch search(heuristic);
+	AStarSearch search(std::make_unique<ManhattanDistance>());
 	search.init(puzzle);
 
 	std::cout << "Solving..." << std::endl;

@@ -7,7 +7,7 @@
 class AStarSearch
 {
 private:
-	Heuristic &heuristic;
+	std::unique_ptr<Heuristic> heuristic;
 	Puzzle puzzle;
 
 	struct NodeCompare
@@ -22,7 +22,7 @@ private:
 	void expand(std::shared_ptr<Node> node);
 
 public:
-	AStarSearch(Heuristic &heuristic);
+	AStarSearch(std::unique_ptr<Heuristic> heuristic);
 	void init(Puzzle puzzle);
 
 	std::vector<Puzzle> solve();

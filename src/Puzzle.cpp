@@ -54,7 +54,7 @@ Puzzle::Puzzle(unsigned char size)
 	std::random_device rd;
 	std::mt19937 gen(rd());
 
-	for (unsigned int _ = 0; _ < std::pow(size, 4); _++)
+	for (unsigned int _ = 0; _ < std::pow(size, 5); _++)
 	{
 		std::vector<Puzzle> moves = getMoves();
 		std::uniform_int_distribution<> dis(0, moves.size() - 1);
