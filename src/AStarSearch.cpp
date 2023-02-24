@@ -5,22 +5,6 @@
 
 bool AStarSearch::NodeCompare::operator()(std::shared_ptr<Node> const &a, std::shared_ptr<Node> const &b) const { return a.get()->getF() < b.get()->getF(); }
 
-std::vector<Puzzle> AStarSearch::reconstructPath(Node node)
-{
-	std::cout << "Frontier: " << frontier.size() << std::endl;
-	std::cout << "Closed: " << closed.size() << std::endl;
-
-	std::vector<Puzzle> path;
-	while (node.getParent() != nullptr)
-	{
-		path.push_back(node.getPuzzle());
-		node = *node.getParent();
-	}
-
-	std::reverse(path.begin(), path.end());
-	return path;
-}
-
 void AStarSearch::expand(std::shared_ptr<Node> node)
 {
 	for (Puzzle puzzle : node.get()->getPuzzle().getMoves())
@@ -36,10 +20,10 @@ void AStarSearch::expand(std::shared_ptr<Node> node)
 
 		if (frontierNode != frontier.end())
 		{
-			if (frontierNode->get()->getCost() <= child.getCost())
-				continue;
-			else
+			if (frontierNode->get()->getCost() > child.getCost())
 				frontier.erase(frontierNode);
+			else
+				continue;
 		}
 
 		frontier.insert(std::make_shared<Node>(child));
@@ -47,29 +31,51 @@ void AStarSearch::expand(std::shared_ptr<Node> node)
 }
 
 AStarSearch::AStarSearch(std::unique_ptr<Heuristic> heuristic) : heuristic(std::move(heuristic)) {}
+bool AStarSearch::isSolved() { return solved; }
+
 void AStarSearch::init(Puzzle puzzle)
 {
 	this->puzzle = puzzle;
 
 	frontier.clear();
 	closed.clear();
+	solved = false;
 
 	frontier.insert(std::make_unique<Node>(*heuristic.get(), puzzle, nullptr));
 }
 
-std::vector<Puzzle> AStarSearch::solve()
+void AStarSearch::solve()
 {
-	while (!frontier.empty())
+	while (!frontier.empty() && !solved)
 	{
 		std::shared_ptr<Node> node = *frontier.begin();
 		frontier.erase(frontier.begin());
 		closed.push_back(node);
 
 		if (node->getHeuristic() == 0)
-			return reconstructPath(*node);
+			solved = true;
+		else
+			expand(node);
+	}
+}
 
-		expand(node);
+std::vector<Puzzle> AStarSearch::result()
+{
+	std::cout << "Frontier: " << frontier.size() << std::endl;
+	std::cout << "Closed: " << closed.size() << std::endl;
+
+	if (!solved)
+		return std::vector<Puzzle>();
+
+	Node *node = closed.back().get();
+	std::vector<Puzzle> path;
+
+	while (node != nullptr)
+	{
+		path.push_back(node->getPuzzle());
+		node = node->getParent();
 	}
 
-	return std::vector<Puzzle>();
+	std::reverse(path.begin(), path.end());
+	return path;
 }

@@ -77,12 +77,29 @@ int main(int argc, char *argv[])
 
 	std::cout << "Solving..." << std::endl;
 	auto start = std::chrono::steady_clock::now();
-	std::vector<Puzzle> path = search.solve();
+	search.solve();
 	auto end = std::chrono::steady_clock::now();
 
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
 			  << std::endl;
+
+	if (!search.isSolved())
+		error("No solution found");
+
+	std::vector<Puzzle> path = search.result();
+	std::cout << "Path length: " << path.size() << std::endl
+			  << std::endl;
+
+	std::string answer;
+	do
+	{
+		std::cout << "Do you want to see the solution? (y/n) ";
+		std::cin >> answer;
+	} while (answer != "y" && answer != "n");
+
+	if (answer == "n")
+		return 0;
 
 	std::cout << "Solution:" << std::endl;
 	for (Puzzle puzzle : path)

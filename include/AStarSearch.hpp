@@ -9,6 +9,7 @@ class AStarSearch
 private:
 	std::unique_ptr<Heuristic> heuristic;
 	Puzzle puzzle;
+	bool solved = false;
 
 	struct NodeCompare
 	{
@@ -18,12 +19,13 @@ private:
 	std::multiset<std::shared_ptr<Node>, NodeCompare> frontier;
 	std::vector<std::shared_ptr<Node>> closed;
 
-	std::vector<Puzzle> reconstructPath(Node node);
 	void expand(std::shared_ptr<Node> node);
 
 public:
 	AStarSearch(std::unique_ptr<Heuristic> heuristic);
-	void init(Puzzle puzzle);
+	bool isSolved();
 
-	std::vector<Puzzle> solve();
+	void init(Puzzle puzzle);
+	void solve();
+	std::vector<Puzzle> result();
 };
