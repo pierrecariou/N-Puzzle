@@ -3,7 +3,7 @@
 #include <vector>
 #include <random>
 
-bool Puzzle::canMove(Direction direction)
+bool Puzzle::canMove(Direction direction) const
 {
 	switch (direction)
 	{
@@ -19,27 +19,27 @@ bool Puzzle::canMove(Direction direction)
 	return false;
 }
 
-Puzzle Puzzle::move(Direction direction)
+std::unique_ptr<Puzzle> Puzzle::move(Direction direction) const
 {
-	Puzzle result = *this;
+	std::unique_ptr<Puzzle> result(new Puzzle(*this));
 
 	switch (direction)
 	{
 	case UP:
-		result.emptyTile.first--;
+		result.get()->emptyTile.first--;
 		break;
 	case DOWN:
-		result.emptyTile.first++;
+		result.get()->emptyTile.first++;
 		break;
 	case LEFT:
-		result.emptyTile.second--;
+		result.get()->emptyTile.second--;
 		break;
 	case RIGHT:
-		result.emptyTile.second++;
+		result.get()->emptyTile.second++;
 		break;
 	}
 
-	std::swap(result.tiles[emptyTile.first + emptyTile.second * size], result.tiles[result.emptyTile.first + result.emptyTile.second * size]);
+	std::swap(result.get()->tiles[emptyTile.first + emptyTile.second * size], result.get()->tiles[result.get()->emptyTile.first + result.get()->emptyTile.second * size]);
 	return result;
 }
 
@@ -56,9 +56,9 @@ Puzzle::Puzzle(unsigned char size)
 
 	for (unsigned int _ = 0; _ < std::pow(size, 5); _++)
 	{
-		std::vector<Puzzle> moves = getMoves();
+		const std::vector<std::unique_ptr<Puzzle>> &moves = getMoves();
 		std::uniform_int_distribution<> dis(0, moves.size() - 1);
-		*this = moves[dis(gen)];
+		*this = *moves[dis(gen)];
 	}
 }
 
@@ -66,14 +66,17 @@ Puzzle::Puzzle(std::vector<unsigned char> tiles) : size(std::sqrt(tiles.size()))
 {
 	for (unsigned short i = 0; i < tiles.size(); i++)
 		if (tiles[i] == 0)
+		{
 			emptyTile = std::make_pair(i % size, i / size);
+			break;
+		}
 }
 
 unsigned char Puzzle::getSize() const { return size; }
-std::vector<unsigned char> Puzzle::getTiles() const { return tiles; }
-std::vector<Puzzle> Puzzle::getMoves()
+std::vector<unsigned char> const &Puzzle::getTiles() const { return tiles; }
+std::vector<std::unique_ptr<Puzzle>> Puzzle::getMoves() const
 {
-	std::vector<Puzzle> result;
+	std::vector<std::unique_ptr<Puzzle>> result;
 	for (auto direction : {UP, DOWN, LEFT, RIGHT})
 		if (canMove(direction))
 			result.push_back(move(direction));

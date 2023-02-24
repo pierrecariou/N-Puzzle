@@ -1,7 +1,6 @@
 #include "Heuristic.hpp"
 #include "Node.hpp"
 
-#include <memory>
 #include <set>
 
 class AStarSearch
@@ -9,7 +8,6 @@ class AStarSearch
 private:
 	std::unique_ptr<Heuristic> heuristic;
 	Puzzle puzzle;
-	bool solved = false;
 
 	struct NodeCompare
 	{
@@ -18,14 +16,15 @@ private:
 
 	std::multiset<std::shared_ptr<Node>, NodeCompare> frontier;
 	std::vector<std::shared_ptr<Node>> closed;
+	bool solved = false;
 
-	void expand(std::shared_ptr<Node> node);
+	void expand(const std::shared_ptr<Node> &node);
 
 public:
 	AStarSearch(std::unique_ptr<Heuristic> heuristic);
 	bool isSolved();
 
-	void init(Puzzle puzzle);
+	void init(const Puzzle &puzzle);
 	void solve();
-	std::vector<Puzzle> result();
+	const std::vector<Puzzle> result();
 };

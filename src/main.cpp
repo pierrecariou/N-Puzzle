@@ -7,13 +7,13 @@
 #include <chrono>
 #include <cmath>
 
-int error(std::string message, int code = 1)
+int error(const std::string &message, int code = 1)
 {
 	std::cerr << message << std::endl;
 	exit(code);
 }
 
-std::vector<unsigned char> fromFile(std::string filename)
+std::vector<unsigned char> fromFile(const std::string &filename)
 {
 	std::ifstream file(filename);
 	if (!file.is_open())
@@ -42,10 +42,10 @@ std::vector<unsigned char> fromFile(std::string filename)
 	return puzzle;
 }
 
-std::string toString(Puzzle puzzle)
+std::string toString(const Puzzle &puzzle)
 {
-	unsigned char size = puzzle.getSize();
-	std::vector<unsigned char> tiles = puzzle.getTiles();
+	const unsigned char size = puzzle.getSize();
+	std::vector<unsigned char> const &tiles = puzzle.getTiles();
 
 	std::string result;
 	for (unsigned short i = 0; i < tiles.size(); i++)
@@ -64,16 +64,18 @@ int main(int argc, char *argv[])
 	if (argc > 2)
 		error("Usage: " + std::string(argv[0]) + " [filename]");
 
-	Puzzle puzzle;
+	std::unique_ptr<Puzzle> puzzle;
 	if (argc == 2)
-		puzzle = fromFile(argv[1]);
+		puzzle = std::make_unique<Puzzle>(fromFile(argv[1]));
+	else
+		puzzle = std::make_unique<Puzzle>(3);
 
 	std::cout << "Initial puzzle:" << std::endl;
-	std::cout << toString(puzzle) << std::endl
+	std::cout << toString(*puzzle) << std::endl
 			  << std::endl;
 
 	AStarSearch search(std::make_unique<ManhattanDistance>());
-	search.init(puzzle);
+	search.init(*puzzle);
 
 	std::cout << "Solving..." << std::endl;
 	auto start = std::chrono::steady_clock::now();
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
 	if (!search.isSolved())
 		error("No solution found");
 
-	std::vector<Puzzle> path = search.result();
+	const std::vector<Puzzle> &path = search.result();
 	std::cout << "Path length: " << path.size() << std::endl
 			  << std::endl;
 
@@ -102,7 +104,7 @@ int main(int argc, char *argv[])
 		return 0;
 
 	std::cout << "Solution:" << std::endl;
-	for (Puzzle puzzle : path)
+	for (const Puzzle &puzzle : path)
 		std::cout << toString(puzzle) << std::endl
 				  << std::endl;
 }
