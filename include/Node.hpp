@@ -3,20 +3,22 @@
 #include "Puzzle.hpp"
 #include "Heuristic.hpp"
 
+#include <memory>
+
 class Node
 {
 private:
 	Puzzle puzzle;
-	const Node *parent;
+	std::shared_ptr<Node> parent;
 
 	unsigned int cost;
 	unsigned int heuristic;
 
 public:
-	Node(const Heuristic &heuristic, Puzzle puzzle, const Node *parent = nullptr);
+	Node(const Heuristic &heuristic, Puzzle puzzle, std::shared_ptr<Node> parent);
 
 	Puzzle getPuzzle() const;
-	const Node *getParent() const;
+	Node *getParent() const;
 
 	unsigned int getCost() const;
 	unsigned int getHeuristic() const;

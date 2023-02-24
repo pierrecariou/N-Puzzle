@@ -1,6 +1,6 @@
 #include "Node.hpp"
 
-Node::Node(const Heuristic &heuristic, Puzzle puzzle, const Node *parent) : puzzle(puzzle), parent(parent)
+Node::Node(const Heuristic &heuristic, Puzzle puzzle, std::shared_ptr<Node> parent) : puzzle(puzzle), parent(parent)
 {
 	if (parent == nullptr)
 		cost = 0;
@@ -11,7 +11,7 @@ Node::Node(const Heuristic &heuristic, Puzzle puzzle, const Node *parent) : puzz
 }
 
 Puzzle Node::getPuzzle() const { return puzzle; }
-const Node *Node::getParent() const { return parent; }
+Node *Node::getParent() const { return parent.get(); }
 
 unsigned int Node::getCost() const { return cost; }
 unsigned int Node::getHeuristic() const { return heuristic; }

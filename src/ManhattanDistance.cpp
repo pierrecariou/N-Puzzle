@@ -1,6 +1,6 @@
-#include <math.h>
-
 #include "ManhattanDistance.hpp"
+
+#include <math.h>
 
 unsigned short ManhattanDistance::distance(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2) const
 {
@@ -18,8 +18,10 @@ unsigned int ManhattanDistance::calculate(Puzzle puzzle) const
 		{
 			unsigned char x1 = i % size;
 			unsigned char y1 = i / size;
-			unsigned char x2 = tiles[i] % size;
-			unsigned char y2 = tiles[i] / size;
+
+			unsigned char index = tiles[i] - 1;
+			unsigned char x2 = index % size;
+			unsigned char y2 = index / size;
 
 			result += distance(x1, y1, x2, y2);
 		}

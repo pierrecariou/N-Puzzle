@@ -1,8 +1,8 @@
-#include <memory>
-#include <set>
-
 #include "Heuristic.hpp"
 #include "Node.hpp"
+
+#include <memory>
+#include <set>
 
 class AStarSearch
 {
@@ -19,7 +19,7 @@ private:
 	std::vector<std::shared_ptr<Node>> closed;
 
 	std::vector<Puzzle> reconstructPath(Node node);
-	void expand(const Node &node);
+	void expand(std::shared_ptr<Node> node);
 
 public:
 	AStarSearch(Heuristic &heuristic);

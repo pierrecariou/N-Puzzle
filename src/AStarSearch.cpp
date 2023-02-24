@@ -1,7 +1,7 @@
+#include "AStarSearch.hpp"
+
 #include <algorithm>
 #include <iostream>
-
-#include "AStarSearch.hpp"
 
 bool AStarSearch::NodeCompare::operator()(std::shared_ptr<Node> const &a, std::shared_ptr<Node> const &b) const { return a.get()->getF() < b.get()->getF(); }
 
@@ -21,11 +21,11 @@ std::vector<Puzzle> AStarSearch::reconstructPath(Node node)
 	return path;
 }
 
-void AStarSearch::expand(const Node &node)
+void AStarSearch::expand(std::shared_ptr<Node> node)
 {
-	for (Puzzle puzzle : node.getPuzzle().getMoves())
+	for (Puzzle puzzle : node.get()->getPuzzle().getMoves())
 	{
-		Node child(heuristic, puzzle, &node);
+		Node child(heuristic, puzzle, node);
 
 		if (std::find_if(closed.begin(), closed.end(), [&child](std::shared_ptr<Node> const &node)
 						 { return node.get()->getPuzzle() == child.getPuzzle(); }) != closed.end())
@@ -68,7 +68,7 @@ std::vector<Puzzle> AStarSearch::solve()
 		if (node->getHeuristic() == 0)
 			return reconstructPath(*node);
 
-		expand(*node);
+		expand(node);
 	}
 
 	return std::vector<Puzzle>();
