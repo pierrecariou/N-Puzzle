@@ -2,12 +2,12 @@
 
 #include "ManhattanDistance.hpp"
 
-unsigned short ManhattanDistance::distance(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2)
+unsigned short ManhattanDistance::distance(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2) const
 {
 	return std::abs(x1 - x2) + std::abs(y1 - y2);
 }
 
-unsigned int ManhattanDistance::calculate(Puzzle puzzle)
+unsigned int ManhattanDistance::calculate(Puzzle puzzle) const
 {
 	unsigned char size = puzzle.getSize();
 	std::vector<unsigned char> tiles = puzzle.getTiles();

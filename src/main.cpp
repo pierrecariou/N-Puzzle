@@ -1,4 +1,5 @@
 #include "Puzzle.hpp"
+#include "ManhattanDistance.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -60,17 +61,19 @@ std::string toString(Puzzle puzzle)
 
 int main(int argc, char *argv[])
 {
-	Puzzle *puzzle;
-
 	if (argc > 2)
 		error("Usage: " + std::string(argv[0]) + " [filename]");
-	else if (argc == 2)
-		puzzle = new Puzzle(fromFile(argv[1]));
-	else
-		puzzle = new Puzzle();
+
+	Puzzle puzzle;
+	if (argc == 2)
+		puzzle = fromFile(argv[1]);
 
 	std::cout << "Initial puzzle:" << std::endl;
-	std::cout << toString(*puzzle) << std::endl
+	std::cout << toString(puzzle) << std::endl
+			  << std::endl;
+
+	ManhattanDistance heuristic;
+	std::cout << "Heuristic: " << heuristic.calculate(puzzle) << std::endl
 			  << std::endl;
 
 	// AStarSearch search(new ManhattanDistance());
