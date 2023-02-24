@@ -7,16 +7,16 @@ class Node
 {
 private:
 	Puzzle puzzle;
-	Node *parent;
+	const Node *parent;
 
 	unsigned int cost;
 	unsigned int heuristic;
 
 public:
-	Node(const Heuristic &heuristic, Puzzle puzzle, Node *parent = nullptr);
+	Node(const Heuristic &heuristic, Puzzle puzzle, const Node *parent = nullptr);
 
 	Puzzle getPuzzle() const;
-	Node *getParent() const;
+	const Node *getParent() const;
 
 	unsigned int getCost() const;
 	unsigned int getHeuristic() const;

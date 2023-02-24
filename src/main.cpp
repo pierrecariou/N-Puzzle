@@ -1,5 +1,5 @@
-#include "Puzzle.hpp"
 #include "ManhattanDistance.hpp"
+#include "AStarSearch.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -73,24 +73,21 @@ int main(int argc, char *argv[])
 			  << std::endl;
 
 	ManhattanDistance heuristic;
-	std::cout << "Heuristic: " << heuristic.calculate(puzzle) << std::endl
+
+	AStarSearch search(heuristic);
+	search.init(puzzle);
+
+	std::cout << "Solving..." << std::endl;
+	auto start = std::chrono::steady_clock::now();
+	std::vector<Puzzle> path = search.solve();
+	auto end = std::chrono::steady_clock::now();
+
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
 			  << std::endl;
 
-	// AStarSearch search(new ManhattanDistance());
-	// search.setPuzzle(*puzzle);
-	// delete puzzle;
-
-	// std::cout << "Solving..." << std::endl;
-	// auto start = std::chrono::steady_clock::now();
-	// std::vector<Puzzle> path = search.solve(goal);
-	// auto end = std::chrono::steady_clock::now();
-
-	// std::chrono::duration<double> elapsed_seconds = end - start;
-	// std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
-	// 		  << std::endl;
-
-	// std::cout << "Solution:" << std::endl;
-	// for (Puzzle puzzle : path)
-	// 	std::cout << puzzle.toString() << std::endl
-	// 			  << std::endl;
+	std::cout << "Solution:" << std::endl;
+	for (Puzzle puzzle : path)
+		std::cout << toString(puzzle) << std::endl
+				  << std::endl;
 }
