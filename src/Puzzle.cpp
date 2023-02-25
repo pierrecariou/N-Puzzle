@@ -1,86 +1,100 @@
 #include "Puzzle.hpp"
 
-#include <vector>
+#include <numeric>
 #include <random>
-
-bool Puzzle::canMove(Direction direction) const
-{
-	switch (direction)
-	{
-	case UP:
-		return emptyTile.first != 0;
-	case DOWN:
-		return emptyTile.first != size - 1;
-	case LEFT:
-		return emptyTile.second != 0;
-	case RIGHT:
-		return emptyTile.second != size - 1;
-	}
-	return false;
-}
 
 std::unique_ptr<Puzzle> Puzzle::move(Direction direction) const
 {
-	std::unique_ptr<Puzzle> result(new Puzzle(*this));
+	Puzzle move = *this;
 
 	switch (direction)
 	{
-	case UP:
-		result.get()->emptyTile.first--;
+	case Direction::UP:
+		if (emptyTile.first > 0)
+			move.emptyTile.first--;
 		break;
-	case DOWN:
-		result.get()->emptyTile.first++;
+	case Direction::DOWN:
+		if (emptyTile.first < size - 1)
+			move.emptyTile.first++;
 		break;
-	case LEFT:
-		result.get()->emptyTile.second--;
+	case Direction::LEFT:
+		if (emptyTile.second > 0)
+			move.emptyTile.second--;
 		break;
-	case RIGHT:
-		result.get()->emptyTile.second++;
+	case Direction::RIGHT:
+		if (emptyTile.second < size - 1)
+			move.emptyTile.second++;
 		break;
 	}
 
-	std::swap(result.get()->tiles[emptyTile.first + emptyTile.second * size], result.get()->tiles[result.get()->emptyTile.first + result.get()->emptyTile.second * size]);
-	return result;
+	if (move.emptyTile != emptyTile)
+	{
+		std::swap(move.tiles[emptyTile.first * size + emptyTile.second], move.tiles[move.emptyTile.first * size + move.emptyTile.second]);
+		return std::make_unique<Puzzle>(move);
+	}
+
+	return nullptr;
 }
 
-Puzzle::Puzzle(unsigned char size)
+Puzzle::Puzzle(unsigned char size) : size(size)
 {
 	std::vector<unsigned char> tiles(size * size);
-	std::iota(tiles.begin(), tiles.end(), 1);
+	std::iota(tiles.begin(), tiles.end(), 0);
 	tiles.back() = 0;
 
 	*this = Puzzle(tiles);
 
 	std::random_device rd;
-	std::mt19937 gen(rd());
+	std::mt19937 g(rd());
 
-	for (unsigned int _ = 0; _ < std::pow(size, 5); _++)
+	for (unsigned char _ = 0; _ < 100; ++_)
 	{
-		const std::vector<std::unique_ptr<Puzzle>> &moves = getMoves();
+		std::vector<Puzzle> moves = getMoves();
 		std::uniform_int_distribution<> dis(0, moves.size() - 1);
-		*this = *moves[dis(gen)];
+		*this = moves[dis(g)];
 	}
 }
 
 Puzzle::Puzzle(std::vector<unsigned char> tiles) : size(std::sqrt(tiles.size())), tiles(tiles)
 {
-	for (unsigned short i = 0; i < tiles.size(); i++)
+	for (unsigned char i = 0; i < tiles.size(); ++i)
 		if (tiles[i] == 0)
 		{
-			emptyTile = std::make_pair(i % size, i / size);
+			emptyTile = std::make_pair(i / size, i % size);
 			break;
 		}
 }
 
 unsigned char Puzzle::getSize() const { return size; }
-std::vector<unsigned char> const &Puzzle::getTiles() const { return tiles; }
-std::vector<std::unique_ptr<Puzzle>> Puzzle::getMoves() const
+std::vector<unsigned char> Puzzle::getTiles() const { return tiles; }
+std::vector<Puzzle> Puzzle::getMoves() const
 {
-	std::vector<std::unique_ptr<Puzzle>> result;
-	for (auto direction : {UP, DOWN, LEFT, RIGHT})
-		if (canMove(direction))
-			result.push_back(move(direction));
-	return result;
+	std::vector<Puzzle> moves;
+
+	for (auto direction : {Direction::UP, Direction::DOWN, Direction::LEFT, Direction::RIGHT})
+	{
+		std::unique_ptr<Puzzle> move = this->move(direction);
+		if (move)
+			moves.push_back(*move);
+	}
+
+	return moves;
 }
 
 bool Puzzle::operator==(Puzzle const &other) const { return tiles == other.tiles; }
+std::ostream &operator<<(std::ostream &os, const Puzzle &puzzle)
+{
+	for (unsigned char i = 0; i < puzzle.size; ++i)
+	{
+		if (i > 0)
+			os << std::endl;
+		for (unsigned char j = 0; j < puzzle.size; ++j)
+		{
+			if (j > 0)
+				os << " ";
+			os << (int)puzzle.tiles[i * puzzle.size + j];
+		}
+	}
+
+	return os;
+}
