@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <algorithm>
+#include <iostream>
 
 std::vector<Puzzle> AStarSearch::reconstructPath(Node *node)
 {
@@ -20,9 +21,9 @@ std::vector<Puzzle> AStarSearch::reconstructPath(Node *node)
 
 void AStarSearch::expandNode(Node *node)
 {
-	for (auto &puzzle : node->getPuzzle().getMoves())
+	for (Puzzle puzzle : node->getPuzzle().getMoves())
 	{
-		auto newNode = std::make_shared<Node>(puzzle, heuristic.get(), node);
+		std::shared_ptr<Node> newNode = std::make_shared<Node>(puzzle, heuristic.get(), node);
 
 		if (std::find_if(closed.begin(), closed.end(), [&newNode](const std::shared_ptr<Node> &node)
 						 { return node->getPuzzle() == newNode->getPuzzle(); }) != closed.end())
@@ -33,7 +34,7 @@ void AStarSearch::expandNode(Node *node)
 
 		if (openNode != open.end())
 		{
-			if (newNode->getG() < (*openNode)->getG())
+			if (newNode->getG() < openNode->get()->getG())
 				open.erase(openNode);
 			else
 				continue;
@@ -45,23 +46,23 @@ void AStarSearch::expandNode(Node *node)
 
 AStarSearch::AStarSearch(std::unique_ptr<Heuristic> heuristic) : heuristic(std::move(heuristic)) {}
 
-std::vector<Puzzle> AStarSearch::solve(Puzzle puzzle)
+std::unique_ptr<std::vector<Puzzle>> AStarSearch::solve(Puzzle puzzle)
 {
 	open.clear();
-	open.insert(std::make_shared<Node>(puzzle, heuristic.get()));
 	closed.clear();
 
+	open.insert(std::make_shared<Node>(puzzle, heuristic.get()));
 	while (!open.empty())
 	{
-		auto node = open.begin();
-		closed.insert(*node);
-		open.erase(node);
+		std::shared_ptr<Node> node = *open.begin();
+		open.erase(open.begin());
+		closed.push_back(node);
 
-		if (node->get()->getH() == 0)
-			return reconstructPath(node->get());
+		if (node->getH() == 0)
+			return std::make_unique<std::vector<Puzzle>>(reconstructPath(node.get()));
 
-		expandNode(node->get());
+		expandNode(node.get());
 	}
 
-	return std::vector<Puzzle>();
+	return nullptr;
 }
