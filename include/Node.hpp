@@ -13,12 +13,14 @@ private:
 	unsigned int heuristic;
 
 public:
-	Node(Puzzle puzzle, Node *parent, Heuristic *heuristic);
+	Node(Puzzle puzzle, Heuristic *heuristic, Node *parent = nullptr);
 
-	const Puzzle getPuzzle() const;
-	const Node *getParent() const;
+	Puzzle getPuzzle();
+	Node *getParent();
 
-	unsigned int getG() const;
-	unsigned int getH() const;
+	unsigned int getG();
+	unsigned int getH();
 	unsigned int getF() const;
+
+	bool operator<(const Node &other) const;
 };

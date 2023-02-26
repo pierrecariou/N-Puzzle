@@ -1,15 +1,17 @@
 #include "Node.hpp"
 
-Node::Node(Puzzle puzzle, Node *parent, Heuristic *heuristic) : puzzle(puzzle), parent(parent)
+Node::Node(Puzzle puzzle, Heuristic *heuristic, Node *parent) : puzzle(puzzle), parent(parent)
 {
 	if (parent != nullptr)
 		cost = parent->getG() + 1;
 	this->heuristic = heuristic->calculate(puzzle);
 }
 
-const Puzzle Node::getPuzzle() const { return puzzle; }
-const Node *Node::getParent() const { return parent; }
+Puzzle Node::getPuzzle() { return puzzle; }
+Node *Node::getParent() { return parent; }
 
-unsigned int Node::getG() const { return cost; }
-unsigned int Node::getH() const { return heuristic; }
+unsigned int Node::getG() { return cost; }
+unsigned int Node::getH() { return heuristic; }
 unsigned int Node::getF() const { return cost + heuristic; }
+
+bool Node::operator<(const Node &other) const { return getF() < other.getF(); }

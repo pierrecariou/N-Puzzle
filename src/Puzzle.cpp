@@ -39,7 +39,7 @@ std::unique_ptr<Puzzle> Puzzle::move(Direction direction) const
 Puzzle::Puzzle(unsigned char size) : size(size)
 {
 	std::vector<unsigned char> tiles(size * size);
-	std::iota(tiles.begin(), tiles.end(), 0);
+	std::iota(tiles.begin(), tiles.end(), 1);
 	tiles.back() = 0;
 
 	*this = Puzzle(tiles);
