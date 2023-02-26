@@ -48,22 +48,20 @@ int main(int argc, char **argv)
 			  << *puzzle << std::endl
 			  << std::endl;
 
-	std::cout << "Solving..." << std::endl;
+	std::cout << "Solving..." << std::endl
+			  << std::endl;
 
 	AStarSearch search(std::make_unique<ManhattanDistance>());
 
 	auto start = std::chrono::steady_clock::now();
 	std::unique_ptr<std::vector<Puzzle>> path = search.solve(*puzzle);
 	auto end = std::chrono::steady_clock::now();
+
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
-			  << std::endl;
+			  << search;
 
 	if (path == nullptr)
 		error("No solution found", 1);
-
-	std::cout << "Solution:" << std::endl;
-	for (auto &puzzle : *path)
-		std::cout << puzzle << std::endl
-				  << std::endl;
+	std::cout << "Solution found in " << path->size() - 1 << " moves" << std::endl;
 }

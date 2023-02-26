@@ -15,12 +15,10 @@ private:
 public:
 	Node(Puzzle puzzle, Heuristic *heuristic, Node *parent = nullptr);
 
-	Puzzle getPuzzle();
+	Puzzle &getPuzzle();
 	Node *getParent();
 
 	unsigned int getG();
 	unsigned int getH();
 	unsigned int getF() const;
-
-	bool operator<(const Node &other) const;
 };
