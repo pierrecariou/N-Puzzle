@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Heuristic.hpp"
+#include "ManhattanDistance.hpp"
 
-class ManhattanDistance : public Heuristic
+class LinearConflicts : public ManhattanDistance
 {
 public:
 	std::string name();

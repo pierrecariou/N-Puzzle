@@ -1,5 +1,6 @@
 #include "AStarSearch.hpp"
 #include "ManhattanDistance.hpp"
+#include "LinearConflicts.hpp"
 
 #include <string>
 #include <iostream>
@@ -33,7 +34,7 @@ Puzzle parsePuzzle(std::string input)
 	return Puzzle(tiles);
 }
 
-int main(int argc, char **argv)
+Puzzle getPuzzle(int argc, char **argv)
 {
 	if (argc > 2)
 		error("Usage: " + std::string(argv[0]) + " [puzzle]", 1);
@@ -48,11 +49,43 @@ int main(int argc, char **argv)
 			  << *puzzle << std::endl
 			  << std::endl;
 
+	return *puzzle;
+}
+
+std::unique_ptr<Heuristic> getHeuristic()
+{
+	std::unique_ptr<Heuristic> heuristics[] = {
+		std::make_unique<ManhattanDistance>(),
+		std::make_unique<LinearConflicts>(),
+	};
+
+	std::cout << "Available heuristics:" << std::endl;
+	unsigned char i = 0;
+	for (std::unique_ptr<Heuristic> &heuristic : heuristics)
+		std::cout << (int)++i << ". " << heuristic->name() << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "Select heuristic: ";
+	unsigned int number;
+	while (!(std::cin >> number) || number < 1 || number > (sizeof(heuristics) / sizeof(heuristics[0])))
+	{
+		std::cin.clear();
+		std::cout << "Invalid choice. Select heuristic: ";
+	}
+
+	std::cout << "Selected heuristic: " << heuristics[number - 1]->name() << std::endl
+			  << std::endl;
+
+	return std::move(heuristics[number - 1]);
+}
+
+void solve(Puzzle puzzle, std::unique_ptr<Heuristic> heuristic)
+{
 	std::cout << "Solving..." << std::endl;
-	AStarSearch search(std::make_unique<ManhattanDistance>());
+	AStarSearch search(std::move(heuristic));
 
 	auto start = std::chrono::steady_clock::now();
-	std::unique_ptr<std::vector<Puzzle>> path = search.solve(*puzzle);
+	std::unique_ptr<std::vector<Puzzle>> path = search.solve(puzzle);
 	auto end = std::chrono::steady_clock::now();
 
 	if (path == nullptr)
@@ -64,4 +97,11 @@ int main(int argc, char **argv)
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
 			  << search;
+}
+
+int main(int argc, char **argv)
+{
+	Puzzle puzzle = getPuzzle(argc, argv);
+	std::unique_ptr<Heuristic> heuristic = getHeuristic();
+	solve(puzzle, std::move(heuristic));
 }

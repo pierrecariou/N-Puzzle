@@ -1,5 +1,6 @@
 #include "ManhattanDistance.hpp"
 
+std::string ManhattanDistance::name() { return "Manhattan Distance"; }
 unsigned int ManhattanDistance::calculate(Puzzle puzzle)
 {
 	std::vector<unsigned char> tiles = puzzle.getTiles();
