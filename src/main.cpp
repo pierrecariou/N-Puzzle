@@ -97,6 +97,15 @@ void solve(Puzzle puzzle, std::unique_ptr<Heuristic> heuristic)
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
 			  << search;
+
+	// if (path != nullptr)
+	// {
+	// 	std::cout << std::endl
+	// 			  << "Solution:" << std::endl;
+	// 	for (Puzzle &puzzle : *path)
+	// 		std::cout << puzzle << std::endl
+	// 				  << std::endl;
+	// }
 }
 
 int main(int argc, char **argv)
