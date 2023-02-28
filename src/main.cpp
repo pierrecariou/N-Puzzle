@@ -14,27 +14,6 @@ void error(std::string message, int code)
 	std::exit(code);
 }
 
-Puzzle parsePuzzle(std::string input)
-{
-	std::ifstream file(input);
-	if (!file.is_open())
-		error("Could not open file " + input, 1);
-
-	int number;
-	file >> number;
-	unsigned char size = number;
-
-	std::vector<unsigned char> tiles;
-	while (file >> number)
-		tiles.push_back(number);
-	file.close();
-
-	if (tiles.size() != size * size)
-		error("Invalid puzzle size", 1);
-
-	return Puzzle(tiles);
-}
-
 Puzzle getPuzzle(int argc, char **argv)
 {
 	if (argc > 2)
@@ -42,13 +21,16 @@ Puzzle getPuzzle(int argc, char **argv)
 
 	std::unique_ptr<Puzzle> puzzle;
 	if (argc == 2)
-		puzzle = std::make_unique<Puzzle>(parsePuzzle(argv[1]));
+		puzzle = std::make_unique<Puzzle>(argv[1]);
 	else
 		puzzle = std::make_unique<Puzzle>(3);
 
 	std::cout << "Initial puzzle:" << std::endl
 			  << *puzzle << std::endl
 			  << std::endl;
+
+	if (!puzzle->isSolvable())
+		error("Puzzle is not solvable", 2);
 
 	return *puzzle;
 }
@@ -99,7 +81,7 @@ void solve(Puzzle puzzle, std::unique_ptr<Heuristic> heuristic)
 
 		std::ofstream file("solution.txt");
 		if (!file.is_open())
-			error("Could not open file solution.txt", 1);
+			error("Could not open file solution.txt", 3);
 
 		for (Puzzle &puzzle : *path)
 			file << puzzle << std::endl

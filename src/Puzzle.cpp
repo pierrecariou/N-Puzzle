@@ -2,8 +2,9 @@
 
 #include <numeric>
 #include <random>
+#include <fstream>
 
-std::unique_ptr<Puzzle> Puzzle::move(Direction direction) const
+std::unique_ptr<Puzzle> Puzzle::move(Direction direction)
 {
 	Puzzle move = *this;
 
@@ -55,6 +56,30 @@ Puzzle::Puzzle(unsigned char size) : size(size)
 	}
 }
 
+Puzzle::Puzzle(std::string filename)
+{
+	std::ifstream file(filename);
+	int number;
+
+	if (!file.is_open())
+		throw std::runtime_error("Could not open file " + filename);
+
+	file >> number;
+	size = number;
+	tiles.resize(size * size);
+
+	for (unsigned char i = 0; i < size; ++i)
+		for (unsigned char j = 0; j < size; ++j)
+		{
+			file >> number;
+			tiles[i * size + j] = number;
+			if (number == 0)
+				emptyTile = std::make_pair(i, j);
+		}
+
+	file.close();
+}
+
 Puzzle::Puzzle(std::vector<unsigned char> tiles) : size(std::sqrt(tiles.size())), tiles(tiles)
 {
 	for (unsigned char i = 0; i < tiles.size(); ++i)
@@ -65,9 +90,21 @@ Puzzle::Puzzle(std::vector<unsigned char> tiles) : size(std::sqrt(tiles.size()))
 		}
 }
 
-unsigned char Puzzle::getSize() const { return size; }
-std::vector<unsigned char> Puzzle::getTiles() const { return tiles; }
-std::vector<Puzzle> Puzzle::getMoves() const
+bool Puzzle::isSolvable()
+{
+	unsigned int inversions = 0;
+
+	for (unsigned char i = 0; i < tiles.size(); ++i)
+		for (unsigned char j = i + 1; j < tiles.size(); ++j)
+			if (tiles[i] > tiles[j] && tiles[j] != 0)
+				inversions++;
+
+	return (size % 2 == 1 && inversions % 2 == 0) || (size % 2 == 0 && ((emptyTile.first + inversions) % 2 == 1));
+}
+
+unsigned char Puzzle::getSize() { return size; }
+std::vector<unsigned char> Puzzle::getTiles() { return tiles; }
+std::vector<Puzzle> Puzzle::getMoves()
 {
 	std::vector<Puzzle> moves;
 
