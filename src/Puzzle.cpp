@@ -91,7 +91,7 @@ std::ostream &operator<<(std::ostream &os, const Puzzle &puzzle)
 		for (unsigned char j = 0; j < puzzle.size; ++j)
 		{
 			if (j > 0)
-				os << " ";
+				os << "\t";
 			os << (int)puzzle.tiles[i * puzzle.size + j];
 		}
 	}

@@ -27,6 +27,7 @@ Puzzle parsePuzzle(std::string input)
 	std::vector<unsigned char> tiles;
 	while (file >> number)
 		tiles.push_back(number);
+	file.close();
 
 	if (tiles.size() != size * size)
 		error("Invalid puzzle size", 1);
@@ -56,8 +57,7 @@ std::unique_ptr<Heuristic> getHeuristic()
 {
 	std::unique_ptr<Heuristic> heuristics[] = {
 		std::make_unique<ManhattanDistance>(),
-		std::make_unique<LinearConflicts>(),
-	};
+		std::make_unique<LinearConflicts>()};
 
 	std::cout << "Available heuristics:" << std::endl;
 	unsigned char i = 0;
@@ -91,21 +91,23 @@ void solve(Puzzle puzzle, std::unique_ptr<Heuristic> heuristic)
 	if (path == nullptr)
 		std::cout << "No solution found" << std::endl;
 	else
+	{
 		std::cout << "Solution found in " << path->size() - 1 << " moves" << std::endl;
+
+		std::ofstream file("solution.txt");
+		if (!file.is_open())
+			error("Could not open file solution.txt", 1);
+
+		for (Puzzle &puzzle : *path)
+			file << puzzle << std::endl
+				 << std::endl;
+		file.close();
+	}
 	std::cout << std::endl;
 
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl
 			  << search;
-
-	// if (path != nullptr)
-	// {
-	// 	std::cout << std::endl
-	// 			  << "Solution:" << std::endl;
-	// 	for (Puzzle &puzzle : *path)
-	// 		std::cout << puzzle << std::endl
-	// 				  << std::endl;
-	// }
 }
 
 int main(int argc, char **argv)

@@ -2,7 +2,6 @@
 
 #include <utility>
 #include <algorithm>
-#include <iostream>
 
 bool AStarSearch::NodeComparator::operator()(const std::shared_ptr<Node> &lhs, const std::shared_ptr<Node> &rhs) const { return lhs.get()->getF() < rhs.get()->getF(); }
 
