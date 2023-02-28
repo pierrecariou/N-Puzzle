@@ -65,8 +65,8 @@ std::unique_ptr<std::vector<Puzzle>> AStarSearch::solve(Puzzle puzzle)
 
 std::ostream &operator<<(std::ostream &os, const AStarSearch &search)
 {
-	os << "Open: " << search.open.size() << std::endl;
-	os << "Closed: " << search.closed.size() << std::endl;
+	os << "Complexity in time: " << search.open.size() << std::endl;
+	os << "Complexity in size: " << search.closed.size() << std::endl;
 
 	return os;
 }

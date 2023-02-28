@@ -89,7 +89,10 @@ void solve(Puzzle puzzle, std::unique_ptr<Heuristic> heuristic)
 	auto end = std::chrono::steady_clock::now();
 
 	if (path == nullptr)
+	{
 		std::cout << "No solution found" << std::endl;
+		return;
+	}
 	else
 	{
 		std::cout << "Solution found in " << path->size() - 1 << " moves" << std::endl;
