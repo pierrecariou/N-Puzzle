@@ -1,6 +1,7 @@
 #include "AStarSearch.hpp"
 #include "ManhattanDistance.hpp"
 #include "LinearConflicts.hpp"
+#include "HammingDistance.hpp"
 
 #include <string>
 #include <iostream>
@@ -39,7 +40,8 @@ std::unique_ptr<Heuristic> getHeuristic()
 {
 	std::unique_ptr<Heuristic> heuristics[] = {
 		std::make_unique<ManhattanDistance>(),
-		std::make_unique<LinearConflicts>()};
+		std::make_unique<LinearConflicts>(),
+		std::make_unique<HammingDistance>()};
 
 	std::cout << "Available heuristics:" << std::endl;
 	unsigned char i = 0;
