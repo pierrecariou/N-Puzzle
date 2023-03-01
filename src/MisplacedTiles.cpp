@@ -1,7 +1,7 @@
-#include "HammingDistance.hpp"
+#include "MisplacedTiles.hpp"
 
-std::string HammingDistance::name() { return "Hamming Distance"; }
-unsigned int HammingDistance::calculate(Puzzle puzzle)
+std::string MisplacedTiles::name() { return "Misplaced Tiles"; }
+unsigned int MisplacedTiles::calculate(Puzzle puzzle)
 {
 	std::vector<unsigned char> tiles = puzzle.getTiles();
 	unsigned int distance = 0;

@@ -2,7 +2,7 @@
 
 #include "Heuristic.hpp"
 
-class HammingDistance : public Heuristic
+class MisplacedTiles : public Heuristic
 {
 public:
 	std::string name();
