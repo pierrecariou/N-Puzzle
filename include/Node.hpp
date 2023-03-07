@@ -18,7 +18,27 @@ public:
 	Puzzle &getPuzzle();
 	Node *getParent();
 
-	unsigned int getG();
-	unsigned int getH();
-	unsigned int getF() const;
+	unsigned int getCost() const;
+	unsigned int getHeuristic() const;
+	unsigned int getScore() const;
+};
+
+struct NodeComparator
+{
+	virtual bool operator()(const std::shared_ptr<Node> &lhs, const std::shared_ptr<Node> &rhs) const = 0;
+};
+
+struct AStarComparator : public NodeComparator
+{
+	bool operator()(const std::shared_ptr<Node> &lhs, const std::shared_ptr<Node> &rhs) const;
+};
+
+struct GreedyComparator : public NodeComparator
+{
+	bool operator()(const std::shared_ptr<Node> &lhs, const std::shared_ptr<Node> &rhs) const;
+};
+
+struct UniformCostComparator : public NodeComparator
+{
+	bool operator()(const std::shared_ptr<Node> &lhs, const std::shared_ptr<Node> &rhs) const;
 };

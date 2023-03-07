@@ -1,7 +1,7 @@
 NAME	:= n-puzzle
-CC		:= g++
-CFLAGS	:= -Wall -Wextra -Ofast
+CFLAGS	:= -Wall -Wextra
 # CFLAGS	+= -Werror
+CFLAGS	:= -Ofast
 
 HEADERS	:= -I ./include
 SRCDIR	:= ./src
@@ -13,10 +13,10 @@ all: $(NAME)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS) && echo "Compiled: $(notdir $@)"
+	$(CXX) $(CFLAGS) -o $@ -c $< $(HEADERS) && echo "Compiled: $(notdir $@)"
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) $(HEADERS) -o $(NAME) && echo "Linked: $(NAME)"
+	$(CXX) $(OBJS) $(HEADERS) -o $(NAME) && echo "Linked: $(NAME)"
 
 clean:
 	rm -rf $(OBJDIR) && echo "Removed: $(OBJDIR)"

@@ -1,8 +1,0 @@
-Pattern Database Heuristic
-Pattern Database with Linear Conflict Heuristic
-
-Breadth-First Search (BFS)
-Depth-First Search (DFS)
-Iterative Deepening Depth-First Search (IDDFS)
-Uniform-Cost Search (UCS)
-Bidirectional Search

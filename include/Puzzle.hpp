@@ -10,10 +10,10 @@ class Puzzle
 {
 private:
 	unsigned char size;
-	std::vector<unsigned char> tiles;
+	std::vector<unsigned char> board;
 	std::pair<unsigned char, unsigned char> emptyTile;
 
-	enum class Direction
+	enum Direction
 	{
 		UP,
 		DOWN,
@@ -22,18 +22,17 @@ private:
 	};
 
 	std::unique_ptr<Puzzle> move(Direction direction);
+	bool isSolvable();
 
 public:
 	Puzzle(unsigned char size = 3);
 	Puzzle(std::string filename);
-	Puzzle(std::vector<unsigned char> tiles);
-
-	bool isSolvable();
+	Puzzle(std::vector<unsigned char> board);
 
 	unsigned char getSize();
-	std::vector<unsigned char> getTiles();
-	std::vector<Puzzle> getMoves();
+	std::vector<unsigned char> getBoard();
+	std::vector<Puzzle> getChildren();
 
-	bool operator==(Puzzle const &other) const;
+	bool operator==(const Puzzle &other) const;
 	friend std::ostream &operator<<(std::ostream &os, const Puzzle &puzzle);
 };
