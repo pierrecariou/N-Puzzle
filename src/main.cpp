@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <fstream>
 
 void error(std::string message, int code = 1)
 {
@@ -106,6 +107,13 @@ void solve(std::shared_ptr<SearchBase> search, Puzzle puzzle)
 	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
 	std::cout << "Solution found in " << path->size() - 1 << " moves" << std::endl;
 	search->printStats();
+
+	std::ofstream solution("solution.txt");
+	if (!solution.is_open())
+		error("Could not open solution.txt", 3);
+	for (Puzzle puzzle : *path)
+		solution << puzzle << std::endl
+				 << std::endl;
 }
 
 int main(int argc, char **argv)

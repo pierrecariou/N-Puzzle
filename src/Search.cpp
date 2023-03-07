@@ -36,6 +36,7 @@ std::vector<Puzzle> Search<NodeComparator>::reconstructPath(Node *node)
 		path.push_back(node->getPuzzle());
 		node = node->getParent();
 	}
+	std::reverse(path.begin(), path.end());
 	return path;
 }
 
