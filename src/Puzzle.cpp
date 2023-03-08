@@ -61,7 +61,7 @@ Puzzle::Puzzle(unsigned char size) : size(size)
 	std::random_device rd;
 	std::mt19937 g(rd());
 
-	for (unsigned char _ = 0; _ < 100; _++)
+	for (unsigned short _ = 0; _ < 100 * size; _++)
 	{
 		std::vector<Puzzle> children = getChildren();
 		std::uniform_int_distribution<> d(0, children.size() - 1);
@@ -81,6 +81,7 @@ Puzzle::Puzzle(std::string filename)
 
 	while (file >> number)
 		board.push_back(number);
+	file.close();
 
 	if (board.size() != size * size)
 		throw std::runtime_error("Board size does not match size");

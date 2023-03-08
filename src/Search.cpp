@@ -33,10 +33,9 @@ std::vector<Puzzle> Search<NodeComparator>::reconstructPath(Node *node)
 	std::vector<Puzzle> path;
 	while (node != nullptr)
 	{
-		path.push_back(node->getPuzzle());
+		path.insert(path.begin(), node->getPuzzle());
 		node = node->getParent();
 	}
-	std::reverse(path.begin(), path.end());
 	return path;
 }
 
