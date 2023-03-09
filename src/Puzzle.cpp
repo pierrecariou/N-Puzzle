@@ -81,7 +81,6 @@ Puzzle::Puzzle(std::string filename)
 
 	while (file >> number)
 		board.push_back(number);
-	file.close();
 
 	if (board.size() != size * size)
 		throw std::runtime_error("Board size does not match size");

@@ -114,7 +114,6 @@ void solve(std::shared_ptr<SearchBase> search, Puzzle puzzle)
 	for (Puzzle puzzle : *path)
 		solution << puzzle << std::endl
 				 << std::endl;
-	solution.close();
 }
 
 int main(int argc, char **argv)
