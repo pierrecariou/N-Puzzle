@@ -6,8 +6,8 @@ CFLAGS	:= -Ofast
 HEADERS	:= -I ./include
 SRCDIR	:= ./src
 OBJDIR	:= ./obj
-SRCS	:= $(shell cd $(SRCDIR) && find . -name "*.cpp")
-OBJS	:= $(SRCS:%.cpp=$(OBJDIR)/%.o)
+SRCS	:= $(shell find $(SRCDIR) -type f -name "*.cpp")
+OBJS	:= $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
 all: $(NAME)
 
